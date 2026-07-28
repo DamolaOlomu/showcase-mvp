@@ -1,0 +1,9 @@
+# Only needed if you switch DATABASE_URL in .env to Postgres instead of
+# the default SQLite. Install with:
+#   pip install -r requirements-postgres.txt
+#
+# On Windows this needs a C build toolchain if a prebuilt wheel isn't
+# available for your Python version — if it fails to install, the easiest
+# fix is running on Python 3.11 or 3.12, or just sticking with SQLite for
+# local dev (the app works identically either way).
+psycopg2-binary==2.9.9

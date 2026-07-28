@@ -1,0 +1,18 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.db
+.env
+
+# Node
+node_modules/
+.next/
+.env.local
+
+# Uploads (local dev storage)
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
+
+# OS
+.DS_Store

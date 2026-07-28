@@ -1,0 +1,5 @@
+# Only needed if you set STORAGE_BACKEND=s3 in .env (production storage —
+# see README's "Deploying to production" section). Local dev with the
+# default STORAGE_BACKEND=local doesn't need this at all.
+#   pip install -r requirements-s3.txt
+boto3==1.35.36

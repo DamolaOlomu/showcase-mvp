@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: showcase
+      POSTGRES_PASSWORD: showcase
+      POSTGRES_DB: showcase
+    ports:
+      - "5432:5432"
+    volumes:
+      - showcase_pgdata:/var/lib/postgresql/data
+
+volumes:
+  showcase_pgdata:
