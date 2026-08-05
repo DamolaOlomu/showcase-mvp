@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.env.local
+showcase.db
+showcase.db.backup
+static/uploads/
+.git/
