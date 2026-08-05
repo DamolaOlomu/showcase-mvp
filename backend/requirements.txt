@@ -9,6 +9,7 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 python-multipart==0.0.9
 python-slugify==8.0.4
+psycopg2-binary==2.9.12
 
 # Batch 2 — AI-powered submission
 playwright==1.47.0
@@ -16,3 +17,7 @@ anthropic==0.34.2
 Pillow==10.4.0
 
 alembic==1.13.3
+
+psycopg2-binary
+
+boto3
