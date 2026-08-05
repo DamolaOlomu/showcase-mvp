@@ -1,22 +1,19 @@
-FROM python:3.11-slim
+# Microsoft's official Playwright image ships Python, matching Chromium
+# binaries, and every system library they need already installed and
+# tested together — avoids the OS/package-name mismatches you get trying
+# to bolt Playwright onto a generic python:slim base. Version must match
+# the playwright== pin in requirements.txt.
+FROM mcr.microsoft.com/playwright/python:v1.47.0-jammy
 
 WORKDIR /app
-
-# System deps needed to build a couple of Python packages (e.g. cryptography,
-# Pillow) before wheels are found, kept minimal since most deps ship wheels.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Playwright's own installer + --with-deps pulls in every system library
-# Chromium needs (fonts, codecs, etc). Running as root inside our own
-# image build (not Render's shared sandbox) means this actually has the
-# permissions it needs to apt-get install things.
-RUN playwright install --with-deps chromium
+# Browsers are already included in this base image, but this confirms/
+# repairs them against the exact version pip just installed — cheap
+# no-op if already present, and guards against version drift.
+RUN playwright install chromium
 
 COPY . .
 
