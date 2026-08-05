@@ -36,6 +36,6 @@ app.include_router(capture.router)
 app.include_router(admin.router)
 
 
-@app.get("/api/health")
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 def health():
     return {"status": "ok"}
