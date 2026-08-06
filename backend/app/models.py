@@ -44,10 +44,14 @@ class User(Base):
     password_hash = Column(String, nullable=False)
 
     avatar_url = Column(String, nullable=True)
+    cover_url = Column(String, nullable=True)
     bio = Column(Text, nullable=True)
     website_url = Column(String, nullable=True)
     twitter_url = Column(String, nullable=True)
     dribbble_url = Column(String, nullable=True)
+    instagram_url = Column(String, nullable=True)
+    linkedin_url = Column(String, nullable=True)
+    github_url = Column(String, nullable=True)
     location = Column(String, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)

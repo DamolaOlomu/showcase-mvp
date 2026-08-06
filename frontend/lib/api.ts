@@ -14,10 +14,14 @@ export type Designer = {
   id: string;
   username: string;
   avatar_url?: string | null;
+  cover_url?: string | null;
   bio?: string | null;
   website_url?: string | null;
   twitter_url?: string | null;
   dribbble_url?: string | null;
+  instagram_url?: string | null;
+  linkedin_url?: string | null;
+  github_url?: string | null;
   location?: string | null;
   created_at: string;
   follower_count: number;
@@ -25,6 +29,19 @@ export type Designer = {
   followed_by_me: boolean;
   is_admin: boolean;
   is_suspended: boolean;
+};
+
+export type UserUpdate = {
+  bio?: string;
+  avatar_url?: string;
+  cover_url?: string;
+  website_url?: string;
+  twitter_url?: string;
+  dribbble_url?: string;
+  instagram_url?: string;
+  linkedin_url?: string;
+  github_url?: string;
+  location?: string;
 };
 
 export type AdminUser = Designer & { email: string };
@@ -118,6 +135,12 @@ export const api = {
 
   getUserDesigns: (username: string) => request<Design[]>(`/api/users/${username}/designs`),
 
+  updateUser: (username: string, data: UserUpdate) =>
+    request<Designer>(`/api/users/${username}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+
   toggleFollow: (username: string) =>
     request<Designer>(`/api/users/${username}/follow`, { method: "POST" }),
 
@@ -180,13 +203,13 @@ export const api = {
       body: JSON.stringify({ url }),
     }),
 
-  upload: async (file: File) => {
+  upload: async (file: File, kind: "design" | "avatar" | "cover" = "design") => {
     const form = new FormData();
     form.append("file", file);
-    return request<{ url: string; thumbnail_url: string | null }>("/api/upload", {
-      method: "POST",
-      body: form,
-    });
+    return request<{ url: string; thumbnail_url: string | null }>(
+      `/api/upload?kind=${kind}`,
+      { method: "POST", body: form }
+    );
   },
 
   // ---- Admin ----

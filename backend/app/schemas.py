@@ -25,10 +25,14 @@ class UserPublic(BaseModel):
     id: str
     username: str
     avatar_url: Optional[str] = None
+    cover_url: Optional[str] = None
     bio: Optional[str] = None
     website_url: Optional[str] = None
     twitter_url: Optional[str] = None
     dribbble_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    github_url: Optional[str] = None
     location: Optional[str] = None
     created_at: datetime
     follower_count: int = 0
@@ -41,9 +45,13 @@ class UserPublic(BaseModel):
 class UserUpdate(BaseModel):
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
+    cover_url: Optional[str] = None
     website_url: Optional[str] = None
     twitter_url: Optional[str] = None
     dribbble_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    github_url: Optional[str] = None
     location: Optional[str] = None
 
 

@@ -61,15 +61,15 @@ export default function AdminPage() {
   if (loading || !user?.is_admin) return null;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
-      <h1 className="font-display text-3xl mb-8">Admin</h1>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <h1 className="font-display text-2xl sm:text-3xl mb-6 sm:mb-8">Admin</h1>
 
-      <div className="flex gap-2 mb-8 text-sm">
+      <div className="flex gap-2 mb-8 text-sm overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
         {(["pending", "approved", "rejected", "users"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-1.5 rounded-full border capitalize transition ${
+            className={`px-4 py-1.5 rounded-full border capitalize transition shrink-0 ${
               tab === t ? "bg-ink text-white border-ink" : "border-neutral-300 hover:border-ink"
             }`}
           >
@@ -124,16 +124,16 @@ function DesignsTable({
         return (
           <div
             key={d.id}
-            className="flex items-center gap-4 px-4 py-3 border-b border-neutral-100 last:border-0 text-sm"
+            className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 px-3 sm:px-4 py-3 border-b border-neutral-100 last:border-0 text-sm"
           >
-            <div className="w-16 h-12 bg-neutral-100 rounded overflow-hidden shrink-0">
+            <div className="w-14 h-10 sm:w-16 sm:h-12 bg-neutral-100 rounded overflow-hidden shrink-0">
               {thumb && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={thumb} alt={d.title} className="w-full h-full object-cover" />
               )}
             </div>
 
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-[140px]">
               <p className="font-medium truncate">{d.title}</p>
               <p className="text-neutral-500 text-xs">
                 @{d.designer.username} · {d.category || "Uncategorized"}
@@ -155,7 +155,7 @@ function DesignsTable({
               </span>
             )}
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
               {tab !== "approved" && (
                 <button
                   onClick={() => onApprove(d.id)}
@@ -212,13 +212,13 @@ function UsersTable({
       {users.map((u) => (
         <div
           key={u.id}
-          className="flex items-center gap-4 px-4 py-3 border-b border-neutral-100 last:border-0 text-sm"
+          className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 px-3 sm:px-4 py-3 border-b border-neutral-100 last:border-0 text-sm"
         >
-          <div className="flex-1 min-w-0">
-            <p className="font-medium">
+          <div className="flex-1 min-w-[160px]">
+            <p className="font-medium truncate">
               @{u.username} {u.is_admin && <span className="text-xs text-neutral-400">(admin)</span>}
             </p>
-            <p className="text-neutral-500 text-xs">{u.email}</p>
+            <p className="text-neutral-500 text-xs truncate">{u.email}</p>
           </div>
           <span className="text-xs text-neutral-500 shrink-0">{u.follower_count} followers</span>
           {u.is_suspended ? (
@@ -229,7 +229,7 @@ function UsersTable({
           {!u.is_admin && (
             <button
               onClick={() => onToggleSuspend(u.id)}
-              className="px-3 py-1.5 border border-neutral-300 rounded-full text-xs hover:border-ink shrink-0"
+              className="px-3 py-1.5 border border-neutral-300 rounded-full text-xs hover:border-ink shrink-0 ml-auto sm:ml-0"
             >
               {u.is_suspended ? "Unsuspend" : "Suspend"}
             </button>
