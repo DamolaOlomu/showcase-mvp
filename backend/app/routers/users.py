@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -10,25 +11,66 @@ from app.database import get_db
 router = APIRouter(prefix="/api/users", tags=["users"])
 
 
+def _bulk_follow_counts(db: Session, user_ids: list[str]) -> dict[str, tuple[int, int]]:
+    """Returns {user_id: (follower_count, following_count)} for a batch of
+    users in two GROUP BY queries total, instead of 2 queries per user."""
+    if not user_ids:
+        return {}
+    counts: dict[str, list[int]] = {uid: [0, 0] for uid in user_ids}
+
+    follower_rows = (
+        db.query(models.Follow.followed_id, func.count(models.Follow.id))
+        .filter(models.Follow.followed_id.in_(user_ids))
+        .group_by(models.Follow.followed_id)
+        .all()
+    )
+    for uid, count in follower_rows:
+        counts[uid][0] = count
+
+    following_rows = (
+        db.query(models.Follow.follower_id, func.count(models.Follow.id))
+        .filter(models.Follow.follower_id.in_(user_ids))
+        .group_by(models.Follow.follower_id)
+        .all()
+    )
+    for uid, count in following_rows:
+        counts[uid][1] = count
+
+    return {uid: (c[0], c[1]) for uid, c in counts.items()}
+
+
+def serialize_users(
+    users: list[models.User], db: Session, current_user: Optional[models.User]
+) -> list[schemas.UserPublic]:
+    """Bulk version of serialize_user — use for any endpoint returning a
+    list of users (followers, following, etc.)."""
+    user_ids = [u.id for u in users]
+    counts = _bulk_follow_counts(db, user_ids)
+
+    followed_ids: set = set()
+    if current_user and user_ids:
+        followed_ids = {
+            row[0]
+            for row in db.query(models.Follow.followed_id)
+            .filter(models.Follow.follower_id == current_user.id, models.Follow.followed_id.in_(user_ids))
+            .all()
+        }
+
+    results = []
+    for u in users:
+        follower_count, following_count = counts.get(u.id, (0, 0))
+        out = schemas.UserPublic.model_validate(u)
+        out.follower_count = follower_count
+        out.following_count = following_count
+        out.followed_by_me = u.id in followed_ids
+        results.append(out)
+    return results
+
+
 def serialize_user(
     user: models.User, db: Session, current_user: Optional[models.User]
 ) -> schemas.UserPublic:
-    follower_count = db.query(models.Follow).filter(models.Follow.followed_id == user.id).count()
-    following_count = db.query(models.Follow).filter(models.Follow.follower_id == user.id).count()
-    followed_by_me = False
-    if current_user:
-        followed_by_me = (
-            db.query(models.Follow)
-            .filter(models.Follow.follower_id == current_user.id, models.Follow.followed_id == user.id)
-            .first()
-            is not None
-        )
-
-    out = schemas.UserPublic.model_validate(user)
-    out.follower_count = follower_count
-    out.following_count = following_count
-    out.followed_by_me = followed_by_me
-    return out
+    return serialize_users([user], db, current_user)[0]
 
 
 @router.get("/{username}", response_model=schemas.UserPublic)
@@ -97,11 +139,13 @@ def get_followers(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    follower_ids = [
-        f.follower_id for f in db.query(models.Follow).filter(models.Follow.followed_id == user.id).all()
-    ]
-    followers = db.query(models.User).filter(models.User.id.in_(follower_ids)).all() if follower_ids else []
-    return [serialize_user(u, db, current_user) for u in followers]
+    followers = (
+        db.query(models.User)
+        .join(models.Follow, models.Follow.follower_id == models.User.id)
+        .filter(models.Follow.followed_id == user.id)
+        .all()
+    )
+    return serialize_users(followers, db, current_user)
 
 
 @router.get("/{username}/following", response_model=list[schemas.UserPublic])
@@ -114,11 +158,13 @@ def get_following(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    following_ids = [
-        f.followed_id for f in db.query(models.Follow).filter(models.Follow.follower_id == user.id).all()
-    ]
-    following = db.query(models.User).filter(models.User.id.in_(following_ids)).all() if following_ids else []
-    return [serialize_user(u, db, current_user) for u in following]
+    following = (
+        db.query(models.User)
+        .join(models.Follow, models.Follow.followed_id == models.User.id)
+        .filter(models.Follow.follower_id == user.id)
+        .all()
+    )
+    return serialize_users(following, db, current_user)
 
 
 @router.get("/{username}/designs", response_model=list[schemas.DesignOut])
@@ -127,16 +173,16 @@ def get_user_designs(
     db: Session = Depends(get_db),
     current_user: Optional[models.User] = Depends(get_current_user_optional),
 ):
-    from app.routers.designs import serialize_design  # avoid circular import at module load
+    from app.routers.designs import serialize_designs, _design_base_query  # avoid circular import at module load
 
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
     designs = (
-        db.query(models.Design)
+        _design_base_query(db)
         .filter(models.Design.user_id == user.id, models.Design.status == models.DesignStatus.approved)
         .order_by(models.Design.created_at.desc())
         .all()
     )
-    return [serialize_design(d, db, current_user) for d in designs]
+    return serialize_designs(designs, db, current_user)

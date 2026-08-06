@@ -22,9 +22,9 @@ def list_all_designs(
     """Unlike the public /api/designs list, this shows every status
     (pending/approved/rejected) so the queue is visible, and defaults to
     newest-first so new submissions surface immediately."""
-    from app.routers.designs import serialize_design
+    from app.routers.designs import serialize_designs, _design_base_query
 
-    query = db.query(models.Design)
+    query = _design_base_query(db)
     if status:
         query = query.filter(models.Design.status == status)
 
@@ -34,7 +34,7 @@ def list_all_designs(
         .limit(page_size)
         .all()
     )
-    return [serialize_design(d, db, admin) for d in designs]
+    return serialize_designs(designs, db, admin)
 
 
 def _get_design_or_404(db: Session, design_id: str) -> models.Design:
@@ -107,14 +107,14 @@ def list_all_users(
     db: Session = Depends(get_db),
     admin: models.User = Depends(get_current_admin),
 ):
-    from app.routers.users import serialize_user
+    from app.routers.users import serialize_users
 
     users = db.query(models.User).order_by(models.User.created_at.desc()).all()
-    out = []
-    for u in users:
-        base = serialize_user(u, db, admin)
-        out.append(schemas.AdminUserOut(**base.model_dump(), email=u.email))
-    return out
+    bases = serialize_users(users, db, admin)
+    return [
+        schemas.AdminUserOut(**base.model_dump(), email=u.email)
+        for base, u in zip(bases, users)
+    ]
 
 
 @router.put("/users/{user_id}/suspend", response_model=schemas.AdminUserOut)
