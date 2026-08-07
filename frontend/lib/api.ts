@@ -99,7 +99,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     ...(options.headers as Record<string, string>),
   };
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const res = await fetch(`${API_URL}${path}`, { cache: "no-store", ...options, headers });
 
   if (!res.ok) {
     let detail = res.statusText;
