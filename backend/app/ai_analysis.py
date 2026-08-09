@@ -23,6 +23,9 @@ logger = logging.getLogger(__name__)
 CATEGORIES = [
     "SaaS", "Agency", "Portfolio", "E-commerce", "Fintech",
     "AI", "Architecture", "Fashion", "Startup", "Creative",
+    "Restaurant", "Real Estate", "Healthcare", "Education", "Travel",
+    "Music", "Gaming", "Photography", "Web3", "Non-profit",
+    "Personal", "Event", "Publishing",
 ]
 
 SYSTEM_PROMPT = f"""You are analyzing a screenshot of a website's homepage for \
@@ -36,7 +39,7 @@ layout, typography, color, imagery, tone — and return ONLY a JSON object \
   "style_tags": ["3 to 6 short lowercase tags describing the visual style, e.g. minimal, dark-mode, bold-typography, editorial, brutalist"],
   "colors": ["2 to 4 dominant hex color codes actually visible in the design, e.g. #111111"],
   "description": "one to two sentence editorial description written for a design showcase — describe the design itself, not marketing copy about the company",
-  "moderation": "\\"safe\\" if this looks like a normal website homepage suitable for a public design gallery, or \\"flagged\\" if it appears to contain sexual content, graphic violence, hate symbols, or looks like it might not actually be a real website (e.g. an error page, a blank page, or unrelated content)",
+  "moderation": "\"safe\" if this looks like a normal website homepage suitable for a public design gallery, or \"flagged\" if it appears to contain sexual content, graphic violence, hate symbols, or looks like it might not actually be a real website (e.g. an error page, a blank page, or unrelated content)",
   "moderation_reason": "if flagged, a short one-sentence reason a human moderator can quickly read; null if safe"
 }}"""
 
