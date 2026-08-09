@@ -14,8 +14,11 @@ Batch 1's manual flow keeps working even before you've wired up an API key.
 import base64
 import io
 import json
+import logging
 
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 CATEGORIES = [
     "SaaS", "Agency", "Portfolio", "E-commerce", "Fintech",
@@ -33,7 +36,7 @@ layout, typography, color, imagery, tone — and return ONLY a JSON object \
   "style_tags": ["3 to 6 short lowercase tags describing the visual style, e.g. minimal, dark-mode, bold-typography, editorial, brutalist"],
   "colors": ["2 to 4 dominant hex color codes actually visible in the design, e.g. #111111"],
   "description": "one to two sentence editorial description written for a design showcase — describe the design itself, not marketing copy about the company",
-  "moderation": "\"safe\" if this looks like a normal website homepage suitable for a public design gallery, or \"flagged\" if it appears to contain sexual content, graphic violence, hate symbols, or looks like it might not actually be a real website (e.g. an error page, a blank page, or unrelated content)",
+  "moderation": "\\"safe\\" if this looks like a normal website homepage suitable for a public design gallery, or \\"flagged\\" if it appears to contain sexual content, graphic violence, hate symbols, or looks like it might not actually be a real website (e.g. an error page, a blank page, or unrelated content)",
   "moderation_reason": "if flagged, a short one-sentence reason a human moderator can quickly read; null if safe"
 }}"""
 
@@ -62,6 +65,7 @@ def _prepare_image(image_bytes: bytes) -> str:
 
 def analyze_screenshot(image_bytes: bytes) -> dict:
     if not settings.anthropic_api_key:
+        logger.warning("AI analysis skipped: ANTHROPIC_API_KEY is not set.")
         return dict(FALLBACK_RESULT)
 
     try:
@@ -94,7 +98,12 @@ def analyze_screenshot(image_bytes: bytes) -> dict:
             text = text.strip("`")
             if text.startswith("json"):
                 text = text[4:]
-        data = json.loads(text)
+
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            logger.error("AI analysis failed: model returned non-JSON text: %r", text[:500])
+            return dict(FALLBACK_RESULT)
 
         category = data.get("category")
         if category not in CATEGORIES:
@@ -114,7 +123,19 @@ def analyze_screenshot(image_bytes: bytes) -> dict:
             "moderation_reason": data.get("moderation_reason") if moderation_flag == "flagged" else None,
             "ai_available": True,
         }
+
+    except anthropic.APIStatusError as e:
+        # Covers bad/expired key (401), no credits (400/402), invalid model
+        # name (404), rate limit (429), etc. e.status_code + e.message tell
+        # you exactly which.
+        logger.error(
+            "AI analysis failed: Anthropic API error status=%s message=%s",
+            getattr(e, "status_code", "?"), str(e),
+        )
+        return dict(FALLBACK_RESULT)
     except Exception:
-        # Any failure (bad key, rate limit, malformed JSON, network error) —
-        # degrade gracefully rather than blocking the submission flow.
+        # Any other failure (network error, PIL decode error, etc.) —
+        # degrade gracefully rather than blocking the submission flow,
+        # but log it so it's not a total black box.
+        logger.exception("AI analysis failed with an unexpected error")
         return dict(FALLBACK_RESULT)
