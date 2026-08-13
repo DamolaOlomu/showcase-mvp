@@ -2,8 +2,8 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import DesignCard from "@/components/DesignCard";
 import RecommendedSection from "@/components/RecommendedSection";
-import HeroHeader from "@/components/HeroHeader";
 import HomeGrid from "@/components/HomeGrid";
+import BackdropSync from "@/components/BackdropSync";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +15,18 @@ export default async function HomePage() {
     // Backend not reachable yet — page still renders.
   }
 
+  const covers = items
+    .map(
+      (d) =>
+        d.images.find((i) => i.type === "desktop")?.thumbnail_url ||
+        d.images.find((i) => i.type === "desktop")?.original_url ||
+        d.images[0]?.original_url
+    )
+    .filter(Boolean) as string[];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <HeroHeader />
+      <BackdropSync images={covers} />
       <RecommendedSection />
 
       {items.length > 0 ? (

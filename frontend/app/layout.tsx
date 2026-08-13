@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
+import { BackdropProvider } from "@/lib/backdrop-context";
 import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import PageTransition from "@/components/PageTransition";
-import ShowcaseBackdrop from "@/components/ShowcaseBackdrop";
-import LiquidBlobs from "@/components/LiquidBlobs";
+import MirrorBackdrop from "@/components/MirrorBackdrop";
 import LiquidCursor from "@/components/LiquidCursor";
 
 const display = Fraunces({
@@ -40,18 +40,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${meta.variable}`}>
       <body className="min-h-screen antialiased font-sans bg-void text-mist">
-        <ShowcaseBackdrop />
-        <LiquidBlobs />
-        <LiquidCursor />
-        <SmoothScroll />
-        <AuthProvider>
-          <div className="relative z-10">
-            <Navbar />
-            <main>
-              <PageTransition>{children}</PageTransition>
-            </main>
-          </div>
-        </AuthProvider>
+        <BackdropProvider>
+          <MirrorBackdrop />
+          <LiquidCursor />
+          <SmoothScroll />
+          <AuthProvider>
+            <div className="relative z-10">
+              <Navbar />
+              <main>
+                <PageTransition>{children}</PageTransition>
+              </main>
+            </div>
+          </AuthProvider>
+        </BackdropProvider>
       </body>
     </html>
   );

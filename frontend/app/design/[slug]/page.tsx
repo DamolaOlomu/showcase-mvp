@@ -6,6 +6,7 @@ import DesignDetailActions from "./DesignDetailActions";
 import ScreenshotViewer from "@/components/ScreenshotViewer";
 import DesignCard from "@/components/DesignCard";
 import ViewTracker from "./ViewTracker";
+import BackdropSync from "@/components/BackdropSync";
 
 export const dynamic = "force-dynamic";
 
@@ -47,8 +48,13 @@ export default async function DesignDetailPage({ params }: { params: { slug: str
 
   const similar = await api.getSimilarDesigns(params.slug, 3).catch(() => []);
 
+  const backdropImages = design.images
+    .map((i) => i.thumbnail_url || i.original_url)
+    .filter(Boolean) as string[];
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
+      <BackdropSync images={backdropImages} />
       <ViewTracker designId={design.id} />
 
       <Link href="/explore" className="text-sm text-neutral-500 hover:opacity-70">
