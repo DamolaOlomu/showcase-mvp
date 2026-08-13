@@ -19,7 +19,7 @@ export default function DesignCard({ design }: { design: Design }) {
       <Link href={`/design/${design.slug}`} className="group block">
         <motion.div
           layoutId={`design-photo-${design.id}`}
-          className="glass glass-edge glass-sweep relative overflow-hidden rounded-2xl p-1.5"
+          className="glass card-frame glass-edge-soft glass-sweep relative overflow-hidden rounded-[22px] p-1"
           whileHover="hover"
           initial="rest"
           animate="rest"
@@ -30,7 +30,7 @@ export default function DesignCard({ design }: { design: Design }) {
             <motion.div
               variants={{ rest: { scale: 1 }, hover: { scale: 1.05 } }}
               transition={springy}
-              className="overflow-hidden rounded-xl relative z-0"
+              className="overflow-hidden rounded-[16px] relative z-0"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -41,7 +41,7 @@ export default function DesignCard({ design }: { design: Design }) {
               />
             </motion.div>
           ) : (
-            <div className="w-full aspect-[4/3] rounded-xl flex items-center justify-center text-mist-faint text-sm bg-black/5">
+            <div className="w-full aspect-[4/3] rounded-[16px] flex items-center justify-center text-mist-faint text-sm bg-black/5">
               No preview
             </div>
           )}
@@ -68,7 +68,7 @@ export default function DesignCard({ design }: { design: Design }) {
               hover: { opacity: 1, y: 0 },
             }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="glass-thin absolute inset-x-1.5 bottom-1.5 rounded-xl px-3 py-2.5 flex items-end justify-between z-10"
+            className="glass-thin absolute inset-x-1.5 bottom-1.5 rounded-[16px] px-3 py-2.5 flex items-end justify-between z-10"
           >
             <div className="min-w-0">
               <p className="text-mist text-xs font-medium truncate">{design.title}</p>
