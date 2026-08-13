@@ -1,9 +1,35 @@
 import type { Metadata } from "next";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
 import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import PageTransition from "@/components/PageTransition";
+import ShowcaseBackdrop from "@/components/ShowcaseBackdrop";
+import LiquidBlobs from "@/components/LiquidBlobs";
+import LiquidCursor from "@/components/LiquidCursor";
+
+const display = Fraunces({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const body = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const meta = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-meta",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Showcase — The best websites, all in one place",
@@ -12,14 +38,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen antialiased font-sans">
+    <html lang="en" className={`${display.variable} ${body.variable} ${meta.variable}`}>
+      <body className="min-h-screen antialiased font-sans bg-void text-mist">
+        <ShowcaseBackdrop />
+        <LiquidBlobs />
+        <LiquidCursor />
         <SmoothScroll />
         <AuthProvider>
-          <Navbar />
-          <main>
-            <PageTransition>{children}</PageTransition>
-          </main>
+          <div className="relative z-10">
+            <Navbar />
+            <main>
+              <PageTransition>{children}</PageTransition>
+            </main>
+          </div>
         </AuthProvider>
       </body>
     </html>

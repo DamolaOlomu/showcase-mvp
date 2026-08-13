@@ -18,19 +18,18 @@ export default async function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <HeroHeader />
-
       <RecommendedSection />
 
-      {items.length === 0 ? (
-        <p className="text-neutral-500 text-sm">
+      {items.length > 0 ? (
+        <HomeGrid items={items} />
+      ) : (
+        <p className="text-mist-dim text-sm">
           No designs published yet. Be the first to{" "}
-          <Link href="/submit" className="underline">
+          <Link href="/submit" className="underline decoration-mist/30 underline-offset-4">
             submit one
           </Link>
           .
         </p>
-      ) : (
-        <HomeGrid items={items} />
       )}
     </div>
   );

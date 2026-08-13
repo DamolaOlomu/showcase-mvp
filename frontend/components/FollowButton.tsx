@@ -31,8 +31,10 @@ export default function FollowButton({ designer }: { designer: Designer }) {
     <button
       onClick={handleClick}
       disabled={busy}
-      className={`px-5 py-2 rounded-full text-sm border transition ${
-        followed ? "bg-ink text-white border-ink" : "border-neutral-300 hover:border-ink"
+      className={`px-5 py-2 rounded-full text-sm transition ${
+        followed
+          ? "bg-mist text-void shadow-glow"
+          : "glass-thin glass-edge text-mist hover:bg-white/50"
       }`}
     >
       {followed ? "Following" : "Follow"} · {followerCount}

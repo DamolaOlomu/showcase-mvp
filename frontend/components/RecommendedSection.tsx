@@ -34,9 +34,9 @@ export default function RecommendedSection() {
       animate="show"
       variants={fadeUp}
     >
-      <h2 className="text-xs font-medium tracking-wide uppercase text-neutral-500 mb-3">Picked for you</h2>
+      <h2 className="text-xs font-mono font-medium tracking-widest uppercase text-mist-faint mb-3">Picked for you</h2>
       <motion.div
-        className="columns-2 sm:columns-3 xl:columns-4 gap-2.5"
+        className="columns-2 sm:columns-3 xl:columns-4 gap-3"
         variants={gridContainer}
         initial="hidden"
         animate="show"

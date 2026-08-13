@@ -8,7 +8,7 @@ import { gridContainer } from "@/lib/motion";
 export default function HomeGrid({ items }: { items: Design[] }) {
   return (
     <motion.div
-      className="columns-2 sm:columns-3 xl:columns-4 gap-2.5"
+      className="columns-2 sm:columns-3 xl:columns-4 gap-3"
       variants={gridContainer}
       initial="hidden"
       animate="show"

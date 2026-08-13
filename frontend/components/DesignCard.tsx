@@ -15,11 +15,11 @@ export default function DesignCard({ design }: { design: Design }) {
   const shotCount = design.images.length;
 
   return (
-    <motion.div variants={cardReveal} className="break-inside-avoid mb-2.5">
+    <motion.div variants={cardReveal} className="break-inside-avoid mb-3">
       <Link href={`/design/${design.slug}`} className="group block">
         <motion.div
           layoutId={`design-photo-${design.id}`}
-          className="relative overflow-hidden rounded-sm bg-neutral-100"
+          className="glass glass-edge glass-sweep relative overflow-hidden rounded-2xl p-1.5"
           whileHover="hover"
           initial="rest"
           animate="rest"
@@ -28,9 +28,9 @@ export default function DesignCard({ design }: { design: Design }) {
         >
           {cover ? (
             <motion.div
-              variants={{ rest: { scale: 1 }, hover: { scale: 1.06 } }}
+              variants={{ rest: { scale: 1 }, hover: { scale: 1.05 } }}
               transition={springy}
-              className="overflow-hidden"
+              className="overflow-hidden rounded-xl relative z-0"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -41,23 +41,23 @@ export default function DesignCard({ design }: { design: Design }) {
               />
             </motion.div>
           ) : (
-            <div className="w-full aspect-[4/3] flex items-center justify-center text-neutral-400 text-sm">
+            <div className="w-full aspect-[4/3] rounded-xl flex items-center justify-center text-mist-faint text-sm bg-black/5">
               No preview
             </div>
           )}
 
           {shotCount > 1 && (
             <motion.span
-              variants={{ rest: { opacity: 0.85 }, hover: { opacity: 1, scale: 1.05 } }}
-              className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[11px] leading-none font-medium px-1.5 py-1 rounded-full min-w-[20px] text-center"
+              variants={{ rest: { opacity: 0.9 }, hover: { opacity: 1, scale: 1.05 } }}
+              className="glass-thin absolute top-3.5 right-3.5 z-10 text-mist text-[11px] leading-none font-mono px-1.5 py-1 rounded-full min-w-[22px] text-center"
             >
               {shotCount}
             </motion.span>
           )}
 
           <motion.div
-            className="absolute left-2 top-2"
-            variants={{ rest: { opacity: 0.9, y: 0 }, hover: { opacity: 1, y: 0 } }}
+            className="absolute left-3.5 top-3.5 z-10"
+            variants={{ rest: { opacity: 0.95, y: 0 }, hover: { opacity: 1, y: 0 } }}
           >
             <Avatar username={design.designer.username} avatarUrl={design.designer.avatar_url} size={26} ring />
           </motion.div>
@@ -68,14 +68,14 @@ export default function DesignCard({ design }: { design: Design }) {
               hover: { opacity: 1, y: 0 },
             }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent px-3 pt-8 pb-2.5 flex items-end justify-between"
+            className="glass-thin absolute inset-x-1.5 bottom-1.5 rounded-xl px-3 py-2.5 flex items-end justify-between z-10"
           >
             <div className="min-w-0">
-              <p className="text-white text-xs font-medium truncate">{design.title}</p>
-              <p className="text-white/70 text-[11px] truncate">@{design.designer.username}</p>
+              <p className="text-mist text-xs font-medium truncate">{design.title}</p>
+              <p className="text-mist-dim text-[11px] truncate">@{design.designer.username}</p>
             </div>
-            <span className="text-white/90 text-[11px] shrink-0 ml-2 flex items-center gap-0.5">
-              ♥ {design.like_count}
+            <span className="text-mist text-[11px] font-mono shrink-0 ml-2 flex items-center gap-1">
+              <span className="text-mist-dim">♥</span> {design.like_count}
             </span>
           </motion.div>
         </motion.div>
