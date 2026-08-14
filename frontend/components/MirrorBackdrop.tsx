@@ -45,7 +45,7 @@ export default function MirrorBackdrop() {
   const single = images.length > 0 && images.length <= 2;
   const hasImages = images.length > 0;
 
-  const tiles = hasImages && !single ? Array.from({ length: 24 }, (_, i) => images[i % images.length]) : [];
+  const tiles = hasImages && !single ? Array.from({ length: 15 }, (_, i) => images[i % images.length]) : [];
 
   return (
     <div aria-hidden className="fixed inset-0 z-0 overflow-hidden bg-void pointer-events-none">
@@ -81,7 +81,7 @@ export default function MirrorBackdrop() {
               src={images[0]}
               alt=""
               className="w-full h-full object-cover scale-110"
-              style={{ filter: "blur(34px) saturate(1.2)" }}
+              style={{ filter: "blur(11px) saturate(1.15)" }}
             />
           </div>
           {/* The mirror: same image, flipped, fading out — a reflection. */}
@@ -92,7 +92,7 @@ export default function MirrorBackdrop() {
               alt=""
               className="w-full h-full object-cover scale-110"
               style={{
-                filter: "blur(34px) saturate(1.2)",
+                filter: "blur(11px) saturate(1.15)",
                 transform: "scaleY(-1)",
                 maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 75%)",
                 WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 75%)",
@@ -104,8 +104,8 @@ export default function MirrorBackdrop() {
 
       {!single && hasImages && (
         <div
-          className="absolute inset-0 grid grid-cols-4 sm:grid-cols-6 gap-0 scale-110"
-          style={{ filter: "blur(38px) saturate(1.15)" }}
+          className="absolute inset-0 grid grid-cols-3 sm:grid-cols-5 gap-0 scale-110"
+          style={{ filter: "blur(11px) saturate(1.1)" }}
         >
           {tiles.map((src, i) => (
             // eslint-disable-next-line @next/next/no-img-element
@@ -115,7 +115,7 @@ export default function MirrorBackdrop() {
       )}
 
       {/* Light wash so foreground text stays legible over busy screenshots. */}
-      <div className="absolute inset-0 bg-white/35" />
+      <div className="absolute inset-0 bg-white/45" />
       <div
         className="absolute inset-0"
         style={{
