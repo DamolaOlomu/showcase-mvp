@@ -81,7 +81,7 @@ export default function MirrorBackdrop() {
               src={images[0]}
               alt=""
               className="w-full h-full object-cover scale-110"
-              style={{ filter: "blur(11px) saturate(1.15)" }}
+              style={{ filter: "blur(4px) saturate(1.1)" }}
             />
           </div>
           {/* The mirror: same image, flipped, fading out — a reflection. */}
@@ -92,7 +92,7 @@ export default function MirrorBackdrop() {
               alt=""
               className="w-full h-full object-cover scale-110"
               style={{
-                filter: "blur(11px) saturate(1.15)",
+                filter: "blur(4px) saturate(1.1)",
                 transform: "scaleY(-1)",
                 maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 75%)",
                 WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 75%)",
@@ -105,7 +105,7 @@ export default function MirrorBackdrop() {
       {!single && hasImages && (
         <div
           className="absolute inset-0 grid grid-cols-3 sm:grid-cols-5 gap-0 scale-110"
-          style={{ filter: "blur(11px) saturate(1.1)" }}
+          style={{ filter: "blur(4px) saturate(1.05)" }}
         >
           {tiles.map((src, i) => (
             // eslint-disable-next-line @next/next/no-img-element
