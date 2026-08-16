@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { api } from "@/lib/api";
 import { useBackdropContext } from "@/lib/backdrop-context";
 
@@ -47,13 +48,19 @@ export default function MirrorBackdrop() {
 
   const tiles = hasImages && !single ? Array.from({ length: 15 }, (_, i) => images[i % images.length]) : [];
 
+  // The backdrop drifts slower than the page scrolls — a soft parallax that
+  // keeps the mirrored screenshots feeling like they're sitting behind a
+  // pane of glass rather than pinned flat to it.
+  const { scrollY } = useScroll();
+  const parallaxY = useTransform(scrollY, [0, 1200], [0, 70]);
+
   return (
     <div aria-hidden className="fixed inset-0 z-0 overflow-hidden bg-void pointer-events-none">
       {/* Global optical-distortion filter every .glass element references
           via backdrop-filter: url(#glass-distortion). */}
       <svg width="0" height="0" className="absolute">
         <defs>
-          <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+          <filter id="glass-distortion" x="-8%" y="-8%" width="116%" height="116%">
             <feTurbulence
               type="fractalNoise"
               baseFrequency="0.009 0.012"
@@ -74,7 +81,7 @@ export default function MirrorBackdrop() {
       </svg>
 
       {single && (
-        <div className="absolute inset-0 flex flex-col">
+        <motion.div style={{ y: parallaxY }} className="absolute inset-0 flex flex-col">
           <div className="relative flex-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -99,19 +106,19 @@ export default function MirrorBackdrop() {
               }}
             />
           </div>
-        </div>
+        </motion.div>
       )}
 
       {!single && hasImages && (
-        <div
+        <motion.div
+          style={{ y: parallaxY, filter: "blur(4px) saturate(1.05)" }}
           className="absolute inset-0 grid grid-cols-3 sm:grid-cols-5 gap-0 scale-110"
-          style={{ filter: "blur(4px) saturate(1.05)" }}
         >
           {tiles.map((src, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img key={i} src={src} alt="" className="w-full h-full object-cover aspect-[4/3]" />
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Light wash so foreground text stays legible over busy screenshots. */}

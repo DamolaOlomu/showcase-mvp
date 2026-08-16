@@ -15,7 +15,13 @@ export default function DesignCard({ design }: { design: Design }) {
   const shotCount = design.images.length;
 
   return (
-    <motion.div variants={cardReveal} className="break-inside-avoid mb-3">
+    <motion.div
+      variants={cardReveal}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+      className="break-inside-avoid mb-3"
+    >
       <Link href={`/design/${design.slug}`} className="group block">
         <motion.div
           layoutId={`design-photo-${design.id}`}
