@@ -115,12 +115,12 @@ export default function MirrorBackdrop() {
       )}
 
       {/* Light wash so foreground text stays legible over busy screenshots. */}
-      <div className="absolute inset-0 bg-white/45" />
+      <div className="absolute inset-0 bg-white/22" />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at 50% 25%, transparent 0%, rgba(200,202,206,0.25) 65%, rgba(190,192,197,0.4) 100%)",
+            "radial-gradient(circle at 50% 25%, transparent 0%, rgba(200,202,206,0.12) 65%, rgba(190,192,197,0.22) 100%)",
         }}
       />
       <div className="grain-overlay" />
